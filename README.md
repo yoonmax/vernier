@@ -19,7 +19,7 @@ You stand at the exact centre of a white circular chamber with a ceramic pistol 
 Requires Node 20 or later.
 
 ```bash
-git clone <this repository>
+git clone https://github.com/yoonmax/vernier.git
 cd vernier
 npm install
 npm run dev
