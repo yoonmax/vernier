@@ -1,0 +1,141 @@
+/**
+ * Visual themes. These change materials and light only: geometry, target positions and
+ * every gameplay rule are untouched, so a score means the same thing in any theme.
+ */
+export const THEMES = Object.freeze({
+  'white-lab': {
+    label: 'White lab',
+    description: 'Bright plaster, neutral shadows, soft polish.',
+    wall: '#eceded',
+    zone: '#e3e4e5',
+    seam: '#9a9fa3',
+    tick: '#39424a',
+    floor: '#c5c8cb',
+    floorSeam: '#7d8285',
+    ceiling: '#f4f5f5',
+    structure: '#f1f2f3',
+    structureMetalness: 0,
+    structureRoughness: 0.55,
+    wallRoughness: 0.82,
+    floorRoughness: 0.34,
+    glow: '#ffffff',
+    glowStrength: 3.2,
+    glass: '#dfe9ee',
+    glassOpacity: 0.26,
+    hemiSky: '#ffffff',
+    hemiGround: '#e6e8e9',
+    hemiStrength: 1.95,
+    keyColor: '#ffffff',
+    keyStrength: 0.85,
+    environmentStrength: 0.55,
+    exposure: 1,
+    reflectionBase: 0.05,
+    reflectionEdge: 0.42,
+    effect: '#1a1f24',
+    flash: '#ffffff',
+    missMark: '#20262b',
+    background: '#e4e7e9',
+    targetGlow: 0.22,
+    shadowStrength: 0.34,
+    ceilingLift: 0.2,
+    weaponEnvironment: 0.62,
+    weaponFill: 0.42,
+    weaponKey: 1.15,
+  },
+  'dark-studio': {
+    label: 'Dark studio',
+    description: 'Deep graphite walls, focused light, bright targets.',
+    wall: '#505358',
+    zone: '#5e6166',
+    seam: '#2c2e31',
+    tick: '#c6cacd',
+    floor: '#3a3c40',
+    floorSeam: '#1a1b1d',
+    ceiling: '#4c4f53',
+    structure: '#5a5d62',
+    structureMetalness: 0.2,
+    structureRoughness: 0.5,
+    wallRoughness: 0.72,
+    floorRoughness: 0.26,
+    glow: '#e9f1f5',
+    glowStrength: 4.2,
+    glass: '#29323a',
+    glassOpacity: 0.3,
+    hemiSky: '#d9dee2',
+    hemiGround: '#a2a6ab',
+    hemiStrength: 1.2,
+    keyColor: '#f2f6f8',
+    keyStrength: 1.2,
+    environmentStrength: 0.5,
+    exposure: 1.05,
+    reflectionBase: 0.04,
+    reflectionEdge: 0.34,
+    effect: '#f2f5f6',
+    flash: '#ffffff',
+    missMark: '#d7dde1',
+    background: '#1b1d20',
+    targetGlow: 0.3,
+    shadowStrength: 0.55,
+    ceilingLift: 0.1,
+    weaponEnvironment: 0.62,
+    weaponFill: 0.3,
+    weaponKey: 0.95,
+  },
+  'soft-chrome': {
+    label: 'Soft chrome',
+    description: 'Cool grey and brushed metal, with restrained reflections.',
+    wall: '#b9c0c6',
+    zone: '#aab2b9',
+    seam: '#667079',
+    tick: '#2a3138',
+    floor: '#9aa2a9',
+    floorSeam: '#5c656d',
+    ceiling: '#c9cfd4',
+    structure: '#b3bac0',
+    structureMetalness: 0.85,
+    structureRoughness: 0.32,
+    wallRoughness: 0.58,
+    floorRoughness: 0.22,
+    glow: '#f3f8fb',
+    glowStrength: 3.4,
+    glass: '#cbd7df',
+    glassOpacity: 0.3,
+    hemiSky: '#f2f6f9',
+    hemiGround: '#88909a',
+    hemiStrength: 1.45,
+    keyColor: '#eef4f8',
+    keyStrength: 1.1,
+    environmentStrength: 1,
+    exposure: 1,
+    reflectionBase: 0.08,
+    reflectionEdge: 0.55,
+    effect: '#14181c',
+    flash: '#ffffff',
+    missMark: '#14181c',
+    background: '#b9c0c6',
+    targetGlow: 0.12,
+    shadowStrength: 0.36,
+    ceilingLift: 0.12,
+    weaponEnvironment: 0.8,
+    weaponFill: 0.42,
+    weaponKey: 1.2,
+  },
+});
+
+/** True if two colours are too close in brightness for one to show up against the other. */
+export function coloursAreSimilar(hexA, hexB) {
+  const luminance = (hex) =>
+    0.2126 * parseInt(hex.slice(1, 3), 16) +
+    0.7152 * parseInt(hex.slice(3, 5), 16) +
+    0.0722 * parseInt(hex.slice(5, 7), 16);
+  return Math.abs(luminance(hexA) - luminance(hexB)) < 48;
+}
+
+/** Colours for a target's face and border. The border always contrasts with the face. */
+export function targetPalette(hex) {
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return { face: hex, border: luminance > 0.32 ? '#14181c' : '#f7f8f8' };
+}

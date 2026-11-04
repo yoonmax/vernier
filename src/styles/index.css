@@ -1,0 +1,333 @@
+@import '@fontsource-variable/archivo/wdth.css';
+@import 'tailwindcss';
+
+/*
+ * Colour lives in tokens so the interface follows the 3D theme. Vernier's one accent is
+ * --index: the red index mark on the scale. It marks the current position and nothing else.
+ */
+:root {
+  --ink: #14181c;
+  --ink-soft: #586169;
+  --ink-faint: #8a939a;
+  --paper: #f4f6f7;
+  --paper-raised: #ffffff;
+  --rule: #cbd0d4;
+  --index: #e2311d;
+  --veil: rgba(228, 231, 233, 0.72);
+  --focus: #14181c;
+  --bar: #14181c;
+  --on-primary: #f4f6f7;
+}
+
+:root[data-theme='dark-studio'] {
+  --ink: #eef1f3;
+  --ink-soft: #a0a9b0;
+  --ink-faint: #6e777e;
+  --paper: #16191c;
+  --paper-raised: #1e2226;
+  --rule: #363c42;
+  --index: #ff4a33;
+  --veil: rgba(14, 16, 18, 0.72);
+  --focus: #eef1f3;
+  --bar: #eef1f3;
+  --on-primary: #14181c;
+}
+
+:root[data-theme='soft-chrome'] {
+  --ink: #0f1317;
+  --ink-soft: #3f4951;
+  --ink-faint: #667079;
+  --paper: #d7dce0;
+  --paper-raised: #e4e8eb;
+  --rule: #a3abb2;
+  --index: #cf2410;
+  --veil: rgba(185, 192, 198, 0.72);
+  --focus: #0f1317;
+  --bar: #0f1317;
+  --on-primary: #e4e8eb;
+}
+
+@theme {
+  --font-sans: 'Archivo Variable', system-ui, sans-serif;
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-paper: var(--paper);
+  --color-paper-raised: var(--paper-raised);
+  --color-rule: var(--rule);
+  --color-index: var(--index);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+body {
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-stretch: 100%;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.game-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Width is the typeface's voice: expanded for names and headlines, condensed for readouts. */
+.type-display {
+  font-stretch: 125%;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+}
+
+.type-readout {
+  font-stretch: 75%;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.005em;
+}
+
+.reveal-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
+
+.reveal-mask > * {
+  display: block;
+}
+
+/* ---- The vernier scale ---------------------------------------------------------------
+   A vernier has a main scale, and a sliding scale whose marks are 9/10 as far apart.
+   These are gradients rather than DOM nodes, so a scale costs almost nothing to draw. */
+
+.scale-main-x,
+.scale-slide-x {
+  background-repeat: repeat-x;
+  background-position: left top;
+}
+
+.scale-main-x {
+  height: 9px;
+  background-image:
+    linear-gradient(to right, var(--ink) 1px, transparent 1px),
+    linear-gradient(to right, var(--ink-faint) 1px, transparent 1px);
+  background-size: 50px 9px, 10px 5px;
+}
+
+.scale-slide-x {
+  height: 7px;
+  background-image: linear-gradient(to right, var(--ink) 1px, transparent 1px);
+  background-size: 9px 7px;
+  background-position: left bottom;
+}
+
+.scale-main-y {
+  width: 12px;
+  background-image:
+    linear-gradient(to bottom, var(--ink) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--ink-faint) 1px, transparent 1px);
+  background-size: 12px 50px, 7px 10px;
+  background-repeat: repeat-y;
+}
+
+.scale-slide-y {
+  width: 10px;
+  background-image: linear-gradient(to bottom, var(--ink) 1px, transparent 1px);
+  background-size: 10px 9px;
+  background-repeat: repeat-y;
+}
+
+/* ---- Sliders ------------------------------------------------------------------------ */
+
+.vernier-slider {
+  position: relative;
+  height: 32px;
+  --position: 0%;
+}
+
+.vernier-slider .track-main {
+  position: absolute;
+  inset: 6px 0 auto 0;
+  overflow: hidden;
+}
+
+.vernier-slider .track-window {
+  position: absolute;
+  top: 15px;
+  left: var(--position);
+  width: 82px;
+  margin-left: -41px;
+  height: 7px;
+  opacity: 0;
+  transition: opacity 120ms linear;
+}
+
+.vernier-slider:hover .track-window,
+.vernier-slider:focus-within .track-window {
+  opacity: 1;
+}
+
+.vernier-slider .track-index {
+  position: absolute;
+  top: 1px;
+  bottom: 3px;
+  left: var(--position);
+  width: 2px;
+  margin-left: -1px;
+  background: var(--index);
+}
+
+.vernier-slider input[type='range'] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+}
+
+.vernier-slider:has(input:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* ---- Text fields -------------------------------------------------------------------- */
+
+.field {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+  padding: 2px 0;
+  user-select: text;
+}
+
+.field:focus {
+  outline: none;
+  border-bottom-color: var(--ink);
+}
+
+.field::-webkit-outer-spin-button,
+.field::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+input[type='number'].field {
+  appearance: textfield;
+}
+
+/* ---- Menu items --------------------------------------------------------------------- */
+
+.menu-item {
+  display: block;
+  text-align: left;
+  color: var(--ink);
+  transition: letter-spacing 220ms cubic-bezier(0.2, 0.7, 0.2, 1), color 120ms linear;
+}
+
+.menu-item:hover,
+.menu-item:focus-visible {
+  letter-spacing: -0.02em;
+}
+
+/* Inside a reveal mask an outline would be clipped, so focus is a thick underline instead. */
+.menu-item:focus-visible {
+  outline: none;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.08em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-item {
+    transition: none;
+  }
+  .vernier-slider .track-window {
+    transition: none;
+  }
+}
+
+.scroll-area {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+
+.primary-button {
+  background: var(--ink);
+  color: var(--on-primary);
+  padding: 0.7em 1.4em;
+  font-weight: 500;
+  transition: transform 120ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.primary-button:active {
+  transform: translateY(1px);
+}
+
+.quiet-button {
+  color: var(--ink);
+  padding: 0.7em 0;
+  border-bottom: 1px solid transparent;
+  transition: border-color 120ms linear;
+}
+
+.quiet-button:hover {
+  border-bottom-color: var(--ink);
+}
+
+/* ---- The HUD ------------------------------------------------------------------------ */
+
+/* Readouts change during play. Containment keeps those changes from invalidating the page. */
+.hud-root {
+  contain: strict;
+}
+
+.hud-readout {
+  color: var(--ink);
+}
+
+:root[data-theme='dark-studio'] .hud-readout {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.hit-marker {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 26px;
+  height: 26px;
+  margin: -13px 0 0 -13px;
+  opacity: 0;
+  pointer-events: none;
+}
