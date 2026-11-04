@@ -2,6 +2,8 @@
 
 A first-person 3D aim trainer that runs in the browser. There's nothing to install and no account to create.
 
+**[Play it in your browser](https://vernier-beta.vercel.app)** on a desktop or laptop with a mouse.
+
 You stand at the exact centre of a white circular chamber with a ceramic pistol and a tiny black crosshair, and shoot targets across six training modes. Mouse input goes straight to the camera, shots resolve inside the click, and the room draws in a few milliseconds a frame.
 
 ![Gridshot being played in the White lab theme](docs/demo.gif)
@@ -14,9 +16,9 @@ You stand at the exact centre of a white circular chamber with a ceramic pistol 
 
 > The demo is the real game played by a script, with time stepped by hand so each frame could be captured. See [`scripts/capture-demo.mjs`](scripts/capture-demo.mjs).
 
-## Run it
+## Run it locally
 
-Requires Node 20 or later.
+Requires Node 20.19 or later.
 
 ```bash
 git clone https://github.com/yoonmax/vernier.git
